@@ -97,10 +97,9 @@ public class ImageController {
         Image image = imageService.getImage(imageId);
         User imageOwner = image.getUser();
         User currentUser = (User) session.getAttribute("loggeduser");
-
-        String tags = convertTagsToString(image.getTags());
+        
         model.addAttribute("image", image);
-        model.addAttribute("tags", tags);
+        model.addAttribute("tags", image.getTags());
         model.addAttribute("comments", image.getComments());
 
         if (currentUser.getId().equals(imageOwner.getId())) {
@@ -156,15 +155,14 @@ public class ImageController {
         User imageOwner = image.getUser();
         User currentUser = (User) session.getAttribute("loggeduser");
 
-        if (imageOwner.getId().equals(currentUser.getId())) {
+        if (currentUser.getId().equals(imageOwner.getId())) {
             imageService.deleteImage(imageId);
             return "redirect:/images";
         } else {
             String error = "Only the owner of the image can delete the image";
             model.addAttribute("deleteError", error);
             model.addAttribute("image", image);
-            String tags = convertTagsToString(image.getTags());
-            model.addAttribute("tags", tags);
+            model.addAttribute("tags", image.getTags());
             model.addAttribute("comments", image.getComments());
             return "/images/image";
         }
@@ -207,8 +205,10 @@ public class ImageController {
             tagString.append(tags.get(i).getName()).append(",");
         }
 
-        Tag lastTag = tags.get(tags.size() - 1);
-        tagString.append(lastTag.getName());
+        if(tags.size() > 1){
+            Tag lastTag = tags.get(tags.size() - 1);
+            tagString.append(lastTag.getName());
+        }
 
         return tagString.toString();
     }
