@@ -50,6 +50,7 @@ public class ImageController {
         Image image = imageService.getImage(imageId);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments", image.getComments());
         return "images/image";
     }
 
@@ -100,6 +101,7 @@ public class ImageController {
         String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
         model.addAttribute("tags", tags);
+        model.addAttribute("comments", image.getComments());
 
         if (currentUser.getId().equals(imageOwner.getId())) {
             return "images/edit";
@@ -163,6 +165,7 @@ public class ImageController {
             model.addAttribute("image", image);
             String tags = convertTagsToString(image.getTags());
             model.addAttribute("tags", tags);
+            model.addAttribute("comments", image.getComments());
             return "/images/image";
         }
     }
