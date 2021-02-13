@@ -5,8 +5,6 @@ import ImageHoster.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.regex.Pattern;
-
 @Service
 public class UserService {
 
@@ -32,11 +30,6 @@ public class UserService {
         } else {
             return null;
         }
-    }
-
-    public boolean checkPasswordStrength(String password) {
-        Pattern pattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{3,}$");
-        return pattern.matcher(password).matches();
     }
 
 }

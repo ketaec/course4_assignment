@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Controller
@@ -41,17 +43,17 @@ public class UserController {
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
     public String registerUser(User user, Model model) {
-        if (userService.checkPasswordStrength(user.getPassword())) {
-            userService.registerUser(user);
-            return "users/login";
-        }
-        else {
+        if(!checkPasswordStrength(user.getPassword())) {
             String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
-            model.addAttribute("passwordTypeError", error);
             model.addAttribute("User", user);
-            return "/users/registration";
+            model.addAttribute("passwordTypeError",error);
+            return "users/registration";
         }
+
+        userService.registerUser(user);
+        return "users/login";
     }
+
 
     //This controller method is called when the request pattern is of type 'users/login'
     @RequestMapping("users/login")
@@ -86,5 +88,17 @@ public class UserController {
         List<Image> images = imageService.getAllImages();
         model.addAttribute("images", images);
         return "index";
+    }
+
+    private boolean checkPasswordStrength(String password) {
+        String regexpression = "^(?=.{3,})(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=]).*$";
+        Pattern pattern = Pattern.compile(regexpression);
+
+        if(password == null) {
+            return false;
+        }
+
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }

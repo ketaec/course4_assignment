@@ -99,12 +99,14 @@ public class ImageController {
         User currentUser = (User) session.getAttribute("loggeduser");
         
         model.addAttribute("image", image);
-        model.addAttribute("tags", image.getTags());
         model.addAttribute("comments", image.getComments());
 
         if (currentUser.getId().equals(imageOwner.getId())) {
+            String tags = convertTagsToString(image.getTags());
+            model.addAttribute("tags", tags);
             return "images/edit";
         }else {
+            model.addAttribute("tags", image.getTags());
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
             return "/images/image";
